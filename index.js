@@ -60,7 +60,15 @@ module.exports = function (app) {
         .forEach((element) => {
           if (fs.existsSync(element + '/festival')) hasFestival = true
         })
-      if (!hasFestival) app.error('Error: please install festival package')
+      if (!hasFestival) {
+        exec('sudo apt update && sudo apt install -y festival', (err, out, errOut) => {
+          if (err) {
+            console.error(`Error installing festival: ${errOut}`);
+          } else {
+            console.log('Festival installed successfully.');
+          }
+        })
+      }
     }
     if (pluginProps.mappings)
       pluginProps.mappings.forEach((m) => {
