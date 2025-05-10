@@ -16,7 +16,7 @@
 const _ = require('lodash')
 const fs = require('fs')
 const fspath = require('path')
-const child_process = require('child_process')
+const { child_process, exec } = require('child_process')
 const say = require('say')
 const SlackNotify = require('slack-notify')
 
