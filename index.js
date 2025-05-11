@@ -16,7 +16,7 @@
 const _ = require('lodash')
 const fs = require('fs')
 const fspath = require('path')
-const { child_process, exec } = require('child_process')
+const { child_process, execSync, spawnSync } = require('child_process')
 const say = require('say')
 const SlackNotify = require('slack-notify')
 
@@ -53,22 +53,21 @@ module.exports = function (app) {
     if (!pluginProps.repeatGap) pluginProps.repeatGap = 0
 
     if (process.platform === 'linux') {
-      // quick check if festival installed for linux
-      process.env.PATH.replace(/["]+/g, '')
-        .split(fspath.delimiter)
-        .filter(Boolean)
-        .forEach((element) => {
-          if (fs.existsSync(element + '/festival')) hasFestival = true
-        })
-      if (!hasFestival) {
-        exec('sudo apt update && sudo apt install -y festival', (err, out, errOut) => {
-          if (err) {
-            console.error(`Error installing festival: ${errOut}`);
-          } else {
-            console.log('Festival installed successfully.');
-          }
-        })
+      function isInstalled(cmd) {
+        try { return execSync(`command -v ${cmd}`, {stdio: 'ignore'}) && true } 
+        catch { return false }
       }
+      ['festival', 'mpg123'].forEach(pkg => {
+        if (!isInstalled(pkg)) {
+          const result = spawnSync('sudo', ['apt', 'install', '-y', pkg], {stdio: 'inherit'});
+          if (result.status === 0) {
+            console.log(`Package ${pkg} was missing and was installed successfully`);
+          } else {
+            app.error(`Failed to install ${pkg}, install package manually`);
+            process.exit(1);
+          }
+        }
+      });
     }
     if (pluginProps.mappings)
       pluginProps.mappings.forEach((m) => {
