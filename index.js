@@ -60,10 +60,10 @@ module.exports = function (app) {
         } catch {
           const result = spawnSync('sudo', ['apt', 'install', '-y', pkg], {stdio: 'inherit'});
           if (result.status !== 0) {
-            console.error(`Failed to install ${pkg}, install manually`);
+            console.error(`${plugin.id}: Failed to install ${pkg}, install it manually and restart the plugin.`);
             process.exit(1);
           }
-          console.log(`Installed ${pkg}`);
+          console.log(`${plugin.id}: Installed missing package, ${pkg}`);
         }
       });
     }
