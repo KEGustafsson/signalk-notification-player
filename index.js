@@ -53,19 +53,17 @@ module.exports = function (app) {
     if (!pluginProps.repeatGap) pluginProps.repeatGap = 0
 
     if (process.platform === 'linux') {
-      function isInstalled(cmd) {
-        try { return execSync(`command -v ${cmd}`, {stdio: 'ignore'}) && true } 
-        catch { return false }
-      }
-      ['festival', 'mpg123'].forEach(pkg => {
-        if (!isInstalled(pkg)) {
+      const pkgs = ['festival', 'mpg123'];
+      pkgs.forEach(pkg => {
+        try {
+          execSync(`which ${pkg}`, {stdio: 'ignore'});
+        } catch {
           const result = spawnSync('sudo', ['apt', 'install', '-y', pkg], {stdio: 'inherit'});
-          if (result.status === 0) {
-            console.log(`Package ${pkg} was missing and was installed successfully`);
-          } else {
-            app.error(`Failed to install ${pkg}, install package manually`);
+          if (result.status !== 0) {
+            console.error(`Failed to install ${pkg}, install manually`);
             process.exit(1);
           }
+          console.log(`Installed ${pkg}`);
         }
       });
     }
