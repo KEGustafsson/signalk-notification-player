@@ -59,7 +59,8 @@ module.exports = function (app) {
           try {
             execSync(`which ${pkg}`, {stdio: 'ignore'});
           } catch {
-            const result = spawnSync('sudo apt update && sudo', ['apt', 'install', '-y', pkg], {stdio: 'inherit'});
+            execSync('sudo apt update', {stdio: 'inherit'});
+            const result = spawnSync('sudo', ['apt', 'install', '-y', pkg], {stdio: 'inherit'});
             if (result.status !== 0) {
               console.error(`${plugin.id}: Failed to install ${pkg}, install it manually and restart the plugin.`);
               process.exit(1);
