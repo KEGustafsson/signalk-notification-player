@@ -28,6 +28,8 @@ Companion webapp for viewing all notifications states and their corresponding va
 Mouse over any path to view its notifcation zones and type  
 <img width="623" alt="sknp-zones" src="https://github.com/user-attachments/assets/16cebb46-a2d7-4827-822a-772b28e7d32a" />
 
+Mouse over the State column of any path (eg. normal) to view log of past notifications.
+<img width="365" alt="notification-player-log" src="https://github.com/user-attachments/assets/68b314ec-77ca-4cb4-8ee6-63403d036ac5" />
 
 
 ### API - Control of Playback & Active Notifications
@@ -56,6 +58,11 @@ curl http://localhost:3000/plugins/signalk-notification-player/disablePath?elect
 List all known notifcation states & associated value (json)
 ```
 curl http://localhost:3000/plugins/signalk-notification-player/list
+```
+List log of notifications (json) (log?path?numberDisplayed)
+```
+curl http://localhost:3000/plugins/signalk-notification-player/log?navigation.gnss.horizontalDilution?25
+curl http://localhost:3000/plugins/signalk-notification-player/log?20  (show last 20, any path)
 ```
 While playback is disabled, incoming notifications will still be queued and played in order, once re-enabled the latest / current notification for a given path will be processed for playback.
 
@@ -99,6 +106,8 @@ Webapps like KIP can be used to silence or resolve active notifications.
 
 ## Release Notes
 
+- version 2.5.1:  
+  - Feature: Persistant log of state changes, viewable via WebApp w/ mouse over State column
 - version 2.4.0:  
   - Feature: Ability to disable/mute individual notifcation paths, state saved between restarts
 - version 2.2.0:  
